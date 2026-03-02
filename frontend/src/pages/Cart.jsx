@@ -85,7 +85,7 @@ const Cart = () => {
         <div className='w-full sm:max-w-md'>
           <CartTotal />
           <div className='w-full text-end '>
-            <button onClick={() => navigate("/placedorders")} className='bg-black mt-5 text-white px-8 py-3 text-sm active:bg-gray-700 hover:bg-slate-900'>PROEED TO CHECKOUT</button>
+            <button onClick={() => navigate("/placedorders")} className='bg-black mt-5 text-white px-8 py-3 text-sm active:bg-gray-700 hover:bg-slate-900'>PROCEED TO CHECKOUT</button>
           </div>
         </div>
 
