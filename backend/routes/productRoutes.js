@@ -8,11 +8,7 @@ import { addProduct, getProductDetail, getProductsList, removeProduct } from '..
 const productRouter = express.Router();//Make router
 
 // routes
-productRouter.post('/addproduct', adminAuth, upload.fields([
-    { name: "image1", maxCount: 1 },
-    { name: "image2", maxCount: 1 },
-    { name: "image3", maxCount: 1 },
-    { name: "image4", maxCount: 1 }]), addProduct)
+productRouter.post('/addproduct', adminAuth, upload.any(), addProduct)
 productRouter.post('/removeproduct', adminAuth, removeProduct)
 productRouter.post('/getproductdetail', getProductDetail)
 productRouter.get('/getproductslist', getProductsList)

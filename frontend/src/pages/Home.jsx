@@ -1,25 +1,29 @@
-import React, { useContext } from 'react'
-import { ShopContext } from '../context/ShopContext'
+import {  useRef } from 'react'
 
 //componemts
-import Hero from '../components/Hero'
-import LatestCollection from '../components/LatestCollection'
-import BestSeller from '../components/BestSeller'
-import OurPolicy from '../components/OurPolicy'
-import NewletterBox from '../components/NewletterBox'
+import Hero from '../components/home/Hero'
+import LatestCollection from '../components/home/LatestCollection'
+import BestSeller from '../components/home/BestSeller'
+import OurPolicy from '../components/home/OurPolicy'
+import NewletterBox from '../components/ui/NewletterBox'
 
 const Home = () => {
 
-  //states and variables
-  const { products } = useContext(ShopContext);
+  const bestSellerRef = useRef();
+  const latestArrivalRef = useRef();
+  // const winterEditRef = useRef(); 
+
+  const goToComponents = (ref) => {
+    ref.current.scrollIntoView({ behavior: "smooth" });
+  };
 
 
   return (
     <div>
 
-      <Hero />
-      <LatestCollection products={products} />
-      <BestSeller />
+      <Hero goToComponents={goToComponents}  bestSellerRef={bestSellerRef} latestArrivalRef={latestArrivalRef} />
+      <LatestCollection  latestArrivalRef={latestArrivalRef}  />
+      <BestSeller bestSellerRef={bestSellerRef} />
       <OurPolicy />
       <NewletterBox />
 

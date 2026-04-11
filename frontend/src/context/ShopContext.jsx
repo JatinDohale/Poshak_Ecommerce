@@ -14,56 +14,64 @@ const ShopContextProvider = (props) => {
     const currency = "₹";
     const deliveryFee = 10;
     const backendURL = import.meta.env.VITE_BACKEND_URL
+    const Whatsup_url =  `https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER}?text=${encodeURIComponent(import.meta.env.VITE_WHATSAPP_MESSAGE)}`
+    const Instagram = import.meta.env.VITE_INSTAGRAM
+    const Facebook = import.meta.env.VITE_FACEBOOK
     const navigate = useNavigate();
     const [token, setToken] = useState();
     const [products, setProducts] = useState([])
     const [cartItems, setCartItems] = useState({})
 
+    
+
 
     // funtion for adding product in cart and Sync with Database
-    const addToCart = async (itemID, size) => {
-
+    const addToCart = async (itemID, size , color) => {
         if (!size) { return toast.error('Select Size First', { autoClose: 1000, }); }
-
         let CartData = structuredClone(cartItems)
-
         if (CartData[itemID]) {
-            if (CartData[itemID][size]) {
-                CartData[itemID][size] += 1
-            } else {
-                CartData[itemID][size] = 1
+            if(CartData[itemID][color]){
+                if (CartData[itemID][color][size] ) {
+                    CartData[itemID][color][size] += 1
+                } else {
+                    CartData[itemID][color][size] = 1
+                }
+            }else{
+                CartData[itemID][color] = {}
+                 CartData[itemID][color][size] = 1
             }
         } else {
             CartData[itemID] = {}
-            CartData[itemID][size] = 1
+            CartData[itemID][color] = {}
+            CartData[itemID][color][size] = 1
         }
 
         setCartItems(CartData)
-        toast.success("Added to Cart")
-
+        
         if (token) {
             try {
-                await axios.post(backendURL + '/api/cart/add', { itemID, size }, { headers: { token: token } })
+                await axios.post(backendURL + '/api/cart/add', { itemID, color , size  }, { headers: { token: token } })
             } catch (e) {
                 console.log(e)
                 toast.error(e.message)
             }
         }
 
+        toast.success("Added to Cart")
+
     }
 
 
     // function for increase and decrease  quantity in Placed Orders
-    const updateQuantity = async (itemId, size, quantity) => {
+    const updateQuantity = async (itemId, color ,  size, quantity) => {
 
         let cartData = structuredClone(cartItems)
-        cartData[itemId][size] = Number(quantity);
+        cartData[itemId][color][size] = Number(quantity);
         setCartItems(cartData)
-        toast.success("Product Remove Successfully")
 
         if (token) {
             try {
-                await axios.post(backendURL + '/api/cart/update', { itemId, size, quantity }, { headers: { token: token } })
+                await axios.post(backendURL + '/api/cart/update', { itemId, color, size, quantity }, { headers: { token: token } })
             } catch (e) {
                 console.log(e)
                 toast.error(e.message)
@@ -77,14 +85,16 @@ const ShopContextProvider = (props) => {
 
         let totalAmount = 0
 
-        for (const items in cartItems) {
-            let itemPrice = products.find((item) => item._id == items).price
-            for (const item in cartItems[items]) {
-                try {
-                    if (cartItems[items][item] > 0) { totalAmount += cartItems[items][item] * itemPrice }
-                } catch (e) {
-                    console.log(e)
-                    toast.error(e.message)
+        for (const prod in cartItems) {
+            let itemPrice = products.find((item) => item._id == prod).price
+            for (const color in cartItems[prod]) {
+                for ( const size in cartItems[prod][color]){
+                    try {
+                        if (cartItems[prod][color][size] > 0) { totalAmount += cartItems[prod][color][size] * itemPrice }
+                    } catch (e) {
+                        console.log(e)
+                        toast.error(e.message)
+                    }
                 }
             }
         }
@@ -119,7 +129,7 @@ const ShopContextProvider = (props) => {
             const respone = await axios.post(backendURL + '/api/cart/getcart', {}, { headers: { token: token } })
 
             if (respone.data.success) {
-                setCartItems(respone.data.cartData)
+                setCartItems(respone.data.cartData ? respone.data.cartData : {})
             } else {
                 toast.error("something wrong try again later")
             }
@@ -148,22 +158,46 @@ const ShopContextProvider = (props) => {
 
     }, [])
 
+    // Get first image supporting both image[] and colorImages{}
+    const getImage = (item) => {
+        if (item.colorImages) {
+            const firstKey = Object.keys(item.colorImages)[0]
+            return firstKey ? item.colorImages[firstKey][0] : ''
+        }
+        return Array.isArray(item.image) ? item.image[0] : item.image || ''
+    }
+
+
+    // fucntion for logout
+    const logout = () => {
+        navigate('/login')
+        setToken(undefined)
+        localStorage.removeItem('token')
+        setCartItems({})
+        // setProfileOpen(false)
+    }
+
 
     // array for store all variables and function
     const value = {
+        Instagram,
+        Facebook,
         products,
         currency,
         deliveryFee,
         cartItems,
         backendURL,
         token,
+        Whatsup_url,
         addToCart,
         updateQuantity,
         getTotalAmount,
         navigate,
         fetchProducts,
         setToken,
-        setCartItems
+        setCartItems,
+        getImage,
+        logout,
     }
 
 

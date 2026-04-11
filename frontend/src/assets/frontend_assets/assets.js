@@ -13,6 +13,9 @@ import razorpay_logo from './razorpay_logo.png'
 import stripe_logo from './stripe_logo.png'
 import cross_icon from './cross_icon.png'
 import left_arrow_icon from './left_arrow_icon.png'
+import Slide_one from './slide_1.png'
+import Slide_Two from './slide_2.png'
+import Slide_Three from './slide_3.png'
 
 export const assets = {
     logo,
@@ -29,5 +32,8 @@ export const assets = {
     razorpay_logo,
     stripe_logo,
     cross_icon,
-    left_arrow_icon
+    left_arrow_icon,
+    Slide_one,
+    Slide_Two,
+    Slide_Three
 }

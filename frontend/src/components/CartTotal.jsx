@@ -2,12 +2,14 @@ import { useContext } from 'react'
 import { ShopContext } from '../context/ShopContext'
 
 //components
-import Tittle from './Tittle'
+import Tittle from './ui/Tittle'
 
 const CartTotal = () => {
 
     //States & Variables
     const { currency, deliveryFee, getTotalAmount } = useContext(ShopContext)
+    const subtotal = getTotalAmount();
+    const dfee = (subtotal > 999 ? 0 :  deliveryFee);
 
     return (
 
@@ -20,17 +22,17 @@ const CartTotal = () => {
             <div className='flex flex-col gap-2 mt-2 text-sm'>
                 <div className='flex justify-between'>
                     <p>Subtotal</p>
-                    <p>{currency}{getTotalAmount()}.00</p>
+                    <p>{currency}{subtotal}.00</p>
                 </div>
                 <hr />
                 <div className='flex justify-between'>
                     <p>Shipping Fee</p>
-                    <p>{currency}{deliveryFee}.00</p>
+                    <p>{currency}{dfee}.00</p>
                 </div>
                 <hr />
                 <div className='flex justify-between'>
                     <b>Total</b>
-                    <b>{currency}{getTotalAmount() === 0 ? 0 : (getTotalAmount() + deliveryFee)}</b>
+                    <b>{currency}{getTotalAmount() === 0 ? 0 : (getTotalAmount() + (dfee ))}</b>
                 </div>
 
             </div>

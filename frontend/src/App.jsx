@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 
 //Pages
 import Home from './pages/Home'
@@ -18,9 +18,12 @@ import Footer from './components/Footer'
 
 
 const App = () => {
+  const location = useLocation()
+  
+
   return (
-    <div className='px-4 sm:px[5vw] md:px-[7vw] lg:px-[10vw]'>
-      <Navbar />
+    <div >
+      {location.pathname !== "/login" && <Navbar />}
       <Routes>
         <Route path='/' element={<Home />}></Route>
         <Route path='/collection' element={<Collection />}></Route>
@@ -33,7 +36,8 @@ const App = () => {
         <Route path='/login' element={<Login />}></Route>
         <Route path='/verify' element={<Verify />}> </Route>
       </Routes>
-      <Footer />
+      { location.pathname !== "/login" && <Footer />}
+
     </div>
   )
 }

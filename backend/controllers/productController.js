@@ -1,46 +1,78 @@
 import { v2 as cloudinary } from 'cloudinary'
-
 import productModal from '../models/productModal.js';
 
 
 // for add the product
 const addProduct = async (req, res) => {
+  try {
+    const {
+      name,
+      description,
+      category,
+      subCategory,
+      price,
+      sizes,
+      bestseller,
+      selectedColors,
+    } = req.body;
 
-   try {
-      const { name, description, sizes, price, category, subcategory, bestseller } = req.body;
+    const colors = JSON.parse(selectedColors);
 
-      const image1 = req.files.image1 && req.files.image1[0]
-      const image2 = req.files.image2 && req.files.image2[0]
-      const image3 = req.files.image3 && req.files.image3[0]
-      const image4 = req.files.image4 && req.files.image4[0]
+    const colorImages = {};
 
-      const images = [image1, image2, image3, image4].filter((item) => item !== undefined);
+    for (const color of colors) {
+      const colorFiles = (req.files || []).filter(
+        (file) => file.fieldname.startsWith(`photos_${color}_`)
+      );
 
-      const image_url = await Promise.all(images.map(async (item) => {
-         const result = await cloudinary.uploader.upload(item.path)
-         return result.secure_url
-      }))
+      if (colorFiles.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: `At least 1 photo required for color: ${color}`,
+        });
+      }
 
-      const productData = new productModal({
-         name,
-         description,
-         sizes: JSON.parse(sizes),
-         price: Number(price),
-         date: Date.now(),
-         image: image_url,
-         category,
-         subcategory,
-         bestseller: bestseller == "true" ? true : false,
-      })
+      // ✅ Fixed — clean single upload function
+      const uploadedUrls = await Promise.all(
+        colorFiles.map((file) => {
+          return new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              { folder: "products" },
+              (error, result) => {
+                if (error) reject(error);
+                else resolve(result.secure_url);
+              }
+            );
+            stream.end(file.buffer);
+          });
+        })
+      );
 
-      const product = productData.save();
-      res.json({ success: true, message: "Product added Succesfully" })
+      colorImages[color] = uploadedUrls;
+    }
 
-   } catch (e) {
-      console.log(e)
-      res.json({ success: false, message: e.message })
-   }
-}
+    const product = new productModal({
+      name,
+      description,
+      category,
+      subCategory,
+      price:      Number(price),
+      sizes:      JSON.parse(sizes),
+      bestseller: bestseller === "true",
+      colorImages,
+      date:       Date.now(),
+    });
+
+    await product.save();
+
+    res.json({ success: true, message: "Product added successfully" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 
 
 //for remove the product

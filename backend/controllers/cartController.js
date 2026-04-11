@@ -4,21 +4,25 @@ import userModal from "../models/userModal.js"
 //  Route for add cart to DB
 const addTOCart = async (req, res) => {
     try {
-
-        const { userID, itemID, size } = req.body
-
+        const { userID, itemID, color, size } = req.body
         const userData = await userModal.findById(userID)
         let cartData = await userData.cartData ? userData.cartData : {};
 
         if (cartData[itemID]) {
-            if (cartData[itemID][size]) {
-                cartData[itemID][size] += 1
+            if (cartData[itemID][color]) {
+                if (cartData[itemID][color][size]) {
+                    cartData[itemID][color][size] += 1
+                } else {
+                    cartData[itemID][color][size] = 1
+                }
             } else {
-                cartData[itemID][size] = 1
+                cartData[itemID][color] = {}
+                cartData[itemID][color][size] = 1
             }
         } else {
             cartData[itemID] = {}
-            cartData[itemID][size] = 1
+            cartData[itemID][color] = {}
+            cartData[itemID][color][size] = 1
         }
 
         await userModal.findByIdAndUpdate(userID, { cartData })
@@ -37,12 +41,12 @@ const addTOCart = async (req, res) => {
 const updateCart = async (req, res) => {
     try {
 
-        const { userID, itemId, size, quantity } = req.body
+        const { userID, itemId, color ,  size, quantity } = req.body
         const userData = await userModal.findById(userID)
 
         let cartData = await userData.cartData;
 
-        cartData[itemId][size] = quantity;
+        cartData[itemId][color][size] = quantity;
 
         await userModal.findByIdAndUpdate(userID, { cartData })
         res.json({ success: true, message: "cart Updated" })

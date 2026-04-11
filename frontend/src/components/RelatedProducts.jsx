@@ -1,6 +1,6 @@
 //components
 import ProductItem from './ProductItem'
-import Tittle from './Tittle'
+import Tittle from './ui/Tittle'
 
 const RelatedProducts = ({ realtedProductList }) => {
 
@@ -12,7 +12,7 @@ const RelatedProducts = ({ realtedProductList }) => {
 
             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 gap-y-6 '>
                 {realtedProductList.map((item, index) => (
-                    <ProductItem key={index} id={item._id} name={item.name} image={item.image} prize={item.price} />
+                    <ProductItem key={index} id={item._id} name={item.name} image={item.image} prize={item.price} colorImages={item.colorImages} />
                 ))
                 }
             </div>

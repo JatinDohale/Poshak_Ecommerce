@@ -1,145 +1,219 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { NavLink } from 'react-router-dom'
-import { ShopContext } from '../context/ShopContext'
-import { assets } from '../assets/frontend_assets/assets'
+import { useEffect, useState, useContext } from 'react'
+import { NavLink, Link } from 'react-router-dom'
 
+import { ShopContext } from '../context/ShopContext' //context file 
+
+// Assests
+import { assets } from '../assets/frontend_assets/assets'
+import { WhatsappIcon, SearchIcon, CartIcon, ProfileIcon, LogoutIcon, HamburgerIcon, HamburgerCloseIcon } from '../assets/icons/Icons'
+
+
+const NAV_LINKS = [
+  { to: '/', label: 'Home' },
+  { to: '/collection', label: 'Collection' },
+  { to: '/about', label: 'About' },
+  { to: '/contact', label: 'Contact' },
+]
 
 const Navbar = () => {
 
-  // States 
+  // States and Variable
   const [visible, setVisible] = useState(false)
-  const { cartItems, token, navigate, setToken, setCartItems } = useContext(ShopContext)
-  const [count, setcount] = useState(10)
+  const [scrolled, setScrolled] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
+  const { Whatsup_message,
+    Whatsup_number,
+    cartItems,
+    token,
+    navigate,
+    logout } = useContext(ShopContext)
+  const waUrl = `https://wa.me/${Whatsup_number}?text=${encodeURIComponent(Whatsup_message)}`
 
-  //logout function
-  const logout = () => {
-    navigate("/login");
-    setToken(undefined);
-    localStorage.removeItem("token");
-    setCartItems({});
-  }
 
-  //useEffect Hoop for calculate total item in cart
+  // Sticky shadow on scroll
   useEffect(() => {
-    let totolCount = 0
-    for (const product in cartItems) {
-      for (const size in cartItems[product]) {
-        totolCount += cartItems[product][size]
-      }
-    }
+    const fn = () => setScrolled(window.scrollY > 8)
+    window.addEventListener('scroll', fn)
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setcount(totolCount)
+  // Cart item count
+  useEffect(() => {
+    let total = 0
+    for (const p in cartItems)
+      for (const c in cartItems[p])
+        for (const s in cartItems[p][c])
+          total += cartItems[p][c][s]
+    setCartCount(total)
   }, [cartItems])
 
 
 
   return (
-    <div className='flex items-center justify-between py-5 font-medium'>
+    <>
+      {/* ── Navbar ── */}
+      <nav className={`nb-fadein sticky top-0 z-40 flex items-center justify-between px-4 sm:px-8 py-3 bg-white transition-all duration-300
+        ${scrolled ? 'shadow-[0_2px_18px_rgba(0,0,0,.08)]' : 'border-b border-gray-100'}`}>
 
-      {/* Logo Image */}
-      <img src={assets.logo} alt="" className='w-36 rounded-2xl' />
+        {/* Logo */}
+        <Link to="/" className="flex-shrink-0">
+          <img src={assets.logo} alt="Poshak" className="w-28 sm:w-32 rounded-xl object-contain" />
+        </Link>
 
-      {/* Links for Navigations */}
-      <ul className='hidden sm:flex gap-5 text-sm text-gray-700 '>
+        {/* Desktop nav links */}
+        <ul className="hidden sm:flex items-center gap-4 md:gap-8">
+          {NAV_LINKS.map(({ to, label }) => (
+            <li key={to}>
+              <NavLink to={to} className={({ isActive }) => `nl ${isActive ? 'active' : ''}`}>
+                {label}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
 
-        <NavLink to='/' className='flex flex-col items-center gap-1'>
-          <p>HOME</p>
-          <hr className='w-2/4 border-none h-[1.5px] bg-gray-700  hidden' />
-        </NavLink>
+        {/* Right actions */}
+        <div className="flex items-center  md:gap-1">
 
-        <NavLink to="/collection" className='flex flex-col items-center gap-1'>
-          <p>COLLECTION</p>
-          <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
-        </NavLink>
+          {/* WhatsApp pill — desktop */}
+          <a href={waUrl} target="_blank" rel="noreferrer" className="wa-pill hidden sm:inline-flex mr-2">
+            {<WhatsappIcon />}
+            <span className='hidden md:inline'>WhatsApp</span>
+          </a>
 
-        <NavLink to="/about" className='flex flex-col items-center gap-1'>
-          <p>ABOUT</p>
-          <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
-        </NavLink>
+          {/* Search */}
+          <button className="ib flex" onClick={() => navigate('/collection')} title="Search">
+            <SearchIcon />
+          </button>
 
-        <NavLink to="/contact" className='flex flex-col items-center gap-1'>
-          <p>CONTACT</p>
-          <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
-        </NavLink>
-
-      </ul>
-
-      {/* icons */}
-      <div className=' flex items-center gap-3  sm:gap-6 '>
-
-        {/* profile Icon */}
-        <div className='group relative'>
-          <NavLink to='/login'>
-            <lord-icon
-              src="/profile_icon.json"
-              trigger="hover"
-              loop="true"
-              speed="1.5"
-              className="w-7 cursor-pointer">
-            </lord-icon>
+          {/* Cart */}
+          {token && <NavLink to="/cart">
+            <button className="ib flex" title="Cart">
+              <CartIcon />
+              {cartCount > 0 && (
+                <span className="cb">{cartCount > 10 ? '10+' : cartCount}</span>
+              )}
+            </button>
           </NavLink>
 
-          {/* profile feature hover  */}
-          {token && <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
-            <div className='flex flex-col gap-2 rounded w-36 py-3 px-5 bg-slate-100 text-gray-500 '>
-              <p className='hover:text-black hover:font-bold cursor-pointer'>My Profile</p>
-              <p onClick={() => navigate('/orders')} className='hover:text-black hover:font-bold cursor-pointer'>Orders</p>
-              <p onClick={logout} className='hover:text-black hover:font-bold cursor-pointer'>Logout</p>
-            </div>
-          </div>
           }
 
-        </div>
 
-        {/* Cart Icon */}
-        <NavLink to="/cart">
-          <div className='relative' >
-            <lord-icon
-              src='/cart_icon.json'
-              trigger="hover"
-              loop="true"
-              speed="1.5"
-              className="w-7 cursor-pointer">
-            </lord-icon>
-            <p className='absolute -right-1.25 bottom-0 text-[8px] w-4 text-center leading-4 aspect-square bg-black rounded-full text-white '>{count}</p>
+          {/* Profile dropdown */}
+          <div className="relative">
+            <button className="ib hidden sm:flex" onClick={() => setProfileOpen(p => !p)} title="Account">
+              <ProfileIcon />
+            </button>
+
+            {profileOpen && (
+              <>
+                {/* Backdrop */}
+                <div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)} />
+                <div className="dd-open absolute right-0 top-11 w-44 bg-white rounded-xl border border-gray-100 shadow-xl overflow-hidden z-50 py-1">
+                  {token ? (
+                    <>
+                      <button className="dd-item" onClick={() => { navigate('/profile'); setProfileOpen(false) }}>
+                        <ProfileIcon />
+                        My Profile
+                      </button>
+                      <button className="dd-item" onClick={() => { navigate('/orders'); setProfileOpen(false) }}>
+                        <CartIcon />
+                        My Orders
+                      </button>
+                      <div className="h-px bg-gray-100 mx-3 my-1" />
+                      <button className="dd-item danger" onClick={logout}>
+                        <LogoutIcon />
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button className="dd-item font-semibold text-gray-800" onClick={() => { navigate('/login'); setProfileOpen(false) }}>
+                        Sign In
+                      </button>
+                      <button className="dd-item font-semibold text-gray-800" onClick={() => { navigate('/login'); setProfileOpen(false) }}>
+                        Log In
+                      </button>
+                    </>
+
+                  )}
+                </div>
+              </>
+            )}
           </div>
-        </NavLink>
 
 
-        {/* menu icon for mobile screen */}
-        <lord-icon
-          src='/menu_icon.json'
-          trigger="hover"
-          loop="true"
-          speed="1.5"
-          className="w-7 cursor-pointer  sm:hidden "
-          onClick={() => { setVisible(true) }}>
-        </lord-icon>
-      </div>
 
-      {/* side menu bar */}
-      <div className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all ${visible ? "w-full" : "w-0"}`}>
-        <div className='flex flex-col text-gray-700'>
-
-          <div onClick={() => { setVisible(false) }} className='flex items-center gap-1 p-3 cursor-pointer'>
-            <img src={assets.left_arrow_icon} alt="" className='h-4' />
-            <p>Back</p>
-          </div>
-
-          <NavLink onClick={() => { setVisible(false) }} to="/" className="pl-6 p-2  hover:font-bold">HOME</NavLink>
-
-          <NavLink onClick={() => { setVisible(false) }} to="/collection" className="pl-6 py-2 hover:font-bold">COLLECTION</NavLink>
-
-          <NavLink onClick={() => { setVisible(false) }} to="/about" className="pl-6 py-2  hover:font-bold">ABOUT</NavLink>
-
-          <NavLink onClick={() => { setVisible(false) }} to="/contact" className="pl-6 py-2 hover:font-bold">CONTACT</NavLink>
-
+          {/* Hamburger — mobile */}
+          <button className="ib flex sm:hidden" onClick={() => setVisible(true)}>
+            <HamburgerIcon />
+          </button>
         </div>
+      </nav>
 
-      </div>
+      {/* ── Mobile drawer ── */}
+      {visible && (
+        <>
+          {/* Backdrop */}
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50" onClick={() => setVisible(false)} />
 
-    </div>
+          {/* Panel */}
+          <div className="mob-open fixed top-0 right-0 bottom-0 z-[60] w-72 bg-white flex flex-col"
+            style={{ boxShadow: '-4px 0 32px rgba(0,0,0,.12)' }}>
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <Link to="/" onClick={() => setVisible(false)}>
+                <img src={assets.logo} alt="Poshak" className="w-24 rounded-lg" />
+              </Link>
+              <button
+                onClick={() => setVisible(false)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors"
+              >
+                <HamburgerCloseIcon />
+              </button>
+            </div>
+
+            {/* Links */}
+            <nav className="flex flex-col flex-1 overflow-y-auto py-2">
+              {NAV_LINKS.map(({ to, label }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  onClick={() => setVisible(false)}
+                  className={({ isActive }) => `ml ${isActive ? 'active' : ''}`}
+                >
+                  {label}
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* Footer — WhatsApp + auth */}
+            <div className="p-5 border-t border-gray-100 flex flex-col gap-3">
+              {!token && (
+                <button
+                  onClick={() => { navigate('/login'); setVisible(false) }}
+                  className="w-full py-3 bg-gray-900 text-white text-xs font-semibold uppercase tracking-widest rounded-xl hover:bg-gray-700 transition-colors"
+                >
+                  Sign In
+                </button>
+              )}
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="wa-pill w-full justify-center"
+                onClick={() => setVisible(false)}
+              >
+                {<WhatsappIcon />}
+                Chat on WhatsApp
+              </a>
+              <p className="text-[10px] text-gray-400 text-center">We reply within minutes ⚡</p>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   )
 }
 
