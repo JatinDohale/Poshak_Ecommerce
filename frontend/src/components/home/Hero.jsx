@@ -110,7 +110,7 @@ const Hero = ({ goToComponents, bestSellerRef, latestArrivalRef }) => {
         </div>
 
         {/* ── Right: Image ── */}
-        <div className="w-full sm:w-1/2 relative overflow-hidden bg-gray-100 min-h-64 sm:min-h-0">
+        <div className="w-full absolute sm:relative sm:w-1/2  overflow-hidden bg-gray-100 min-h-64 sm:min-h-0">
           {animIn && (
             <img
               src={SLIDES_IMG[slide]}

@@ -200,7 +200,7 @@ const Navbar = () => {
               )}
               <button
                 onClick={logout}
-                className="w-full py-3 bg-gray-900 text-white text-xs font-semibold uppercase tracking-widest rounded-xl hover:bg-gray-700 transition-colors"
+                className="w-full py-2 flex items-center justify-center gap-2 bg-gray-900 text-white text-xs font-semibold uppercase tracking-widest rounded-xl hover:bg-gray-700 transition-colors"
               >
                 <LogoutIcon />
                 Logout
