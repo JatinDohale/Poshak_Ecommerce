@@ -108,7 +108,6 @@ function App() {
                   <Route path="/add"    element={<PageWrapper><Add    token={token} /></PageWrapper>} />
                   <Route path="/orders" element={<PageWrapper><Orders token={token} /></PageWrapper>} />
                   <Route path="/list"   element={<PageWrapper><List   token={token} /></PageWrapper>} />
-                  <Route path="/hero"   element={<PageWrapper><HeroSlideManager   token={token} /></PageWrapper>} />
                   {/* Default redirect hint */}
                   <Route path="*" element={
                     <PageWrapper>
