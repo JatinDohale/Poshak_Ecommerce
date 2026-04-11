@@ -198,6 +198,13 @@ const Navbar = () => {
                   Sign In
                 </button>
               )}
+              <button
+                onClick={logout}
+                className="w-full py-3 bg-gray-900 text-white text-xs font-semibold uppercase tracking-widest rounded-xl hover:bg-gray-700 transition-colors"
+              >
+                <LogoutIcon />
+                Logout
+              </button>
               <a
                 href={waUrl}
                 target="_blank"
