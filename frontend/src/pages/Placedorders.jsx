@@ -4,7 +4,7 @@ import { toast, ToastContainer } from 'react-toastify'
 
 import { assets } from '../assets/frontend_assets/assets'
 import { ShopContext } from '../context/ShopContext'
-import { TruckIcon , ShieldIcon , LockIcon } from '../assets/icons/Icons'
+import { TruckIcon, ShieldIcon, LockIcon } from '../assets/icons/Icons'
 
 // componants
 import Tittle from '../components/ui/Tittle'
@@ -23,14 +23,14 @@ const Placedorders = () => {
   const [submitting, setSubmitting] = useState(false)
   const { navigate, backendURL, token, cartItems, setCartItems, getTotalAmount, deliveryFee, products, } = useContext(ShopContext)
   const [formData, setFormData] = useState({
-    firstName: '', 
-    lastName: '', 
+    firstName: '',
+    lastName: '',
     email: '',
-    street: '', 
-    city: '', 
+    street: '',
+    city: '',
     state: '',
-    pincode: '', 
-    country: '', 
+    pincode: '',
+    country: '',
     phone: '',
   })
 
@@ -48,8 +48,8 @@ const Placedorders = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault()
 
-    if (formData.pincode.length !== 6)  return toast.warn('Enter a valid 6-digit Pincode')
-    if (formData.phone.length !== 10)   return toast.warn('Enter a valid 10-digit Phone number')
+    if (formData.pincode.length !== 6) return toast.warn('Enter a valid 6-digit Pincode')
+    if (formData.phone.length !== 10) return toast.warn('Enter a valid 10-digit Phone number')
 
     setSubmitting(true)
 
@@ -62,8 +62,8 @@ const Placedorders = () => {
             if (cartItems[prod][color][size] > 0) {
               const itemInfo = structuredClone(products.find((p) => p._id === prod))
               if (itemInfo) {
-                itemInfo.color    = color
-                itemInfo.size     = size
+                itemInfo.color = color
+                itemInfo.size = size
                 itemInfo.quantity = cartItems[prod][color][size]
                 orderItems.push(itemInfo)
               }
@@ -73,9 +73,9 @@ const Placedorders = () => {
       }
 
       const ordersData = {
-        items:   orderItems,
+        items: orderItems,
         address: formData,
-        amount:  getTotalAmount() + deliveryFee,
+        amount: getTotalAmount() + deliveryFee,
       }
 
       switch (method) {
@@ -171,10 +171,14 @@ const Placedorders = () => {
                 <div className="flex-1">
                   <label className={labelClass}>First Name</label>
                   <input
-                    required name="firstName" type="text"
+                    required
+                    name="firstName"
+                    type="text"
                     placeholder="Jatin"
+                    autoComplete="given-name"
                     value={formData.firstName}
                     onChange={onChangeHandler}
+                    onInput={onChangeHandler}
                     className={inputClass}
                   />
                 </div>
@@ -183,6 +187,7 @@ const Placedorders = () => {
                   <input
                     required name="lastName" type="text"
                     placeholder="Dohale"
+                    autocomplete="lastName"
                     value={formData.lastName}
                     onChange={onChangeHandler}
                     className={inputClass}
@@ -196,6 +201,7 @@ const Placedorders = () => {
                 <input
                   required name="email" type="email"
                   placeholder="jatin@example.com"
+                  autocomplete="email"
                   value={formData.email}
                   onChange={onChangeHandler}
                   className={inputClass}
@@ -208,6 +214,7 @@ const Placedorders = () => {
                 <input
                   required name="street" type="text"
                   placeholder="123 Main Street, Apt 4B"
+                  autocomplete="street"
                   value={formData.street}
                   onChange={onChangeHandler}
                   className={inputClass}
@@ -221,6 +228,7 @@ const Placedorders = () => {
                   <input
                     required name="city" type="text"
                     placeholder="Mumbai"
+                    autocomplete="city"
                     value={formData.city}
                     onChange={onChangeHandler}
                     className={inputClass}
@@ -231,6 +239,7 @@ const Placedorders = () => {
                   <input
                     required name="state" type="text"
                     placeholder="Maharashtra"
+                    autocomplete="state"
                     value={formData.state}
                     onChange={onChangeHandler}
                     className={inputClass}
@@ -246,6 +255,7 @@ const Placedorders = () => {
                     required name="pincode" type="text"
                     inputMode="numeric" maxLength={6}
                     placeholder="400001"
+                    autocomplete="pincode"
                     value={formData.pincode}
                     onChange={onChangeHandler}
                     className={inputClass}
@@ -256,6 +266,7 @@ const Placedorders = () => {
                   <input
                     required name="country" type="text"
                     placeholder="India"
+                    autocomplete="country"
                     value={formData.country}
                     onChange={onChangeHandler}
                     className={inputClass}
@@ -270,6 +281,7 @@ const Placedorders = () => {
                   required name="phone" type="tel"
                   inputMode="numeric" maxLength={10}
                   placeholder="9876543210"
+                  autocomplete="phone"
                   value={formData.phone}
                   onChange={onChangeHandler}
                   className={inputClass}
@@ -391,8 +403,8 @@ const Placedorders = () => {
           <div className="grid grid-cols-3 gap-2">
             {[
               { icon: <ShieldIcon />, label: 'Secure' },
-              { icon: <LockIcon />,   label: 'Encrypted' },
-              { icon: <TruckIcon />,  label: 'Fast Ship' },
+              { icon: <LockIcon />, label: 'Encrypted' },
+              { icon: <TruckIcon />, label: 'Fast Ship' },
             ].map((b) => (
               <div key={b.label}
                 className="bg-white rounded-xl border border-gray-100 shadow-sm
