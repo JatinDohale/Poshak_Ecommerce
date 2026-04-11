@@ -47,10 +47,9 @@ const Hero = ({ goToComponents, bestSellerRef, latestArrivalRef }) => {
 
   return (
     <section className="relative overflow-hidden border border-gray-100 rounded-2xl">
-      <div className="relative flex flex-col sm:flex-row h-full sm:h-[87vh]">
-
+      <div className="relative flex flex-col sm:flex-row h-[70vh] sm:h-[87vh]">
         {/* ── Left: Text ── */}
-        <div className="w-full sm:w-1/2 flex items-center justify-center px-10 py-14 sm:py-0 bg-[#faf9f7] relative">
+        <div className="w-full  sm:w-1/2 flex items-center justify-center px-10 py-14 sm:py-0 bg-[#faf9f7] relative">
 
           {/* Background number watermark */}
           <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[140px] font-bold text-gray-100 select-none pointer-events-none leading-none"
@@ -110,7 +109,7 @@ const Hero = ({ goToComponents, bestSellerRef, latestArrivalRef }) => {
         </div>
 
         {/* ── Right: Image ── */}
-        <div className="w-full absolute sm:relative sm:w-1/2  overflow-hidden bg-gray-100 min-h-64 sm:min-h-0">
+        <div className="w-full absolute sm:relative sm:w-1/2  overflow-hidden bg-gray-100 h-full sm:min-h-0">
           {animIn && (
             <img
               src={SLIDES_IMG[slide]}
