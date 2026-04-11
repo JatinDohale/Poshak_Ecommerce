@@ -27,6 +27,7 @@ const ShopContextProvider = (props) => {
 
     // funtion for adding product in cart and Sync with Database
     const addToCart = async (itemID, size , color) => {
+        if(!token) { return toast.warn("Please Login First")}
         if (!size) { return toast.error('Select Size First', { autoClose: 1000, }); }
         let CartData = structuredClone(cartItems)
         if (CartData[itemID]) {

@@ -172,7 +172,7 @@ const Placedorders = () => {
                   <label className={labelClass}>First Name</label>
                   <input
                     required name="firstName" type="text"
-                    placeholder="John"
+                    placeholder="Jatin"
                     value={formData.firstName}
                     onChange={onChangeHandler}
                     className={inputClass}
@@ -182,7 +182,7 @@ const Placedorders = () => {
                   <label className={labelClass}>Last Name</label>
                   <input
                     required name="lastName" type="text"
-                    placeholder="Doe"
+                    placeholder="Dohale"
                     value={formData.lastName}
                     onChange={onChangeHandler}
                     className={inputClass}
@@ -195,7 +195,7 @@ const Placedorders = () => {
                 <label className={labelClass}>Email Address</label>
                 <input
                   required name="email" type="email"
-                  placeholder="john@example.com"
+                  placeholder="jatin@example.com"
                   value={formData.email}
                   onChange={onChangeHandler}
                   className={inputClass}

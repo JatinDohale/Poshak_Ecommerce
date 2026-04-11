@@ -202,11 +202,10 @@ const Navbar = () => {
                 href={waUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="wa-pill w-full justify-center"
+                className="wa-pill w-full justify-center flex items-center"
                 onClick={() => setVisible(false)}
               >
-                {<WhatsappIcon />}
-                Chat on WhatsApp
+                <WhatsappIcon /> Chat on WhatsApp
               </a>
               <p className="text-[10px] text-gray-400 text-center">We reply within minutes ⚡</p>
             </div>
